@@ -1,9 +1,11 @@
 package uk.ac.scedt.mam.map
 
 import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.Input.Keys
 import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.Texture
-import com.badlogic.gdx.graphics.Texture.TextureFilter.Linear
+//import com.badlogic.gdx.graphics.Texture
+import com.badlogic.gdx.graphics.g2d.Sprite
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.maps.tiled.TiledMap
 import com.badlogic.gdx.maps.tiled.TmxMapLoader
@@ -26,13 +28,23 @@ class Main : KtxGame<KtxScreen>() {
     }
 }
 
+class Character(var x: Float, var y: Float) {
+    private val sprite = Sprite(Texture("circle1.png".toInternalFile(), true))
+    fun render(sb : SpriteBatch) {
+        sb.use {
+            it.draw(sprite, x, y)
+        }
+    }
+}
+
 class MapScreen : KtxScreen {
 //    private val image = Texture("logo.png".toInternalFile(), true).apply { setFilter(Linear, Linear) }
     private val batch = SpriteBatch()
     private lateinit var map: TiledMap
     private lateinit var renderer: OrthogonalTiledMapRenderer
     private lateinit var camera: OrthographicCamera
-    private lateinit var viewport: FitViewport // Is this correct?
+    private lateinit var viewport: FitViewport // Is this the best for this exercise?
+    private val player = Character(32f, 32f)
 
     override fun show() {
         super.show()
@@ -47,14 +59,40 @@ class MapScreen : KtxScreen {
         camera.position.set(viewport.worldWidth/2f, viewport.worldHeight/2f, 0f)
     }
 
-    override fun render(delta: Float) {
+    private fun input() {
+        if (Gdx.input.isKeyPressed(Keys.W)) {
+            player.y++
+        }
+        if (Gdx.input.isKeyPressed(Keys.S)) {
+            player.y--
+        }
+        if (Gdx.input.isKeyPressed(Keys.A)) {
+            player.x--
+        }
+        if (Gdx.input.isKeyPressed(Keys.D)) {
+            player.x++
+        }
+    }
+
+    private fun display () {
         clearScreen(red = 0f, green = 0f, blue = 0f)
         camera.update()
         renderer.setView(camera)
         renderer.render()
-        batch.use {
-//            it.draw(image, 100f, 160f)
-        }
+        player.render(batch)
+//        batch.use {
+////            it.draw(image, 100f, 160f)
+//        }
+    }
+
+    override fun render(delta: Float) {
+        input()
+//        logic()
+        display()
+    }
+
+    private fun logic() {
+        TODO("Not yet implemented")
     }
 
     override fun resize(width: Int, height: Int) {
