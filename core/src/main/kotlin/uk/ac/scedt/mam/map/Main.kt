@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Sprite
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.maps.tiled.TiledMap
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer
 import com.badlogic.gdx.maps.tiled.TmxMapLoader
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer
 import com.badlogic.gdx.utils.viewport.FitViewport
@@ -45,6 +46,8 @@ class MapScreen : KtxScreen {
     private lateinit var camera: OrthographicCamera
     private lateinit var viewport: FitViewport // Is this the best for this exercise?
     private val player = Character(32f, 32f)
+    private val tileSize = 32f
+    private lateinit var wallLayer : TiledMapTileLayer
 
     override fun show() {
         super.show()
@@ -57,7 +60,15 @@ class MapScreen : KtxScreen {
         renderer = OrthogonalTiledMapRenderer(map, 1f)
 //        camera.setToOrtho(true)
         camera.position.set(viewport.worldWidth/2f, viewport.worldHeight/2f, 0f)
+        wallLayer = map.layers.get("walls") as TiledMapTileLayer
     }
+
+
+    fun isBlocked(x: Float, y: Float): Boolean {
+        val cell = wallLayer.getCell((x / tileSize).toInt(), (y / tileSize).toInt())
+        return cell != null
+    }
+
 
     private fun input() {
         if (Gdx.input.isKeyPressed(Keys.W)) {
@@ -80,9 +91,6 @@ class MapScreen : KtxScreen {
         renderer.setView(camera)
         renderer.render()
         player.render(batch)
-//        batch.use {
-////            it.draw(image, 100f, 160f)
-//        }
     }
 
     override fun render(delta: Float) {
