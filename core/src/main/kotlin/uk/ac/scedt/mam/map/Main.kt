@@ -64,25 +64,34 @@ class MapScreen : KtxScreen {
     }
 
 
-    fun isBlocked(x: Float, y: Float): Boolean {
-        val cell = wallLayer.getCell((x / tileSize).toInt(), (y / tileSize).toInt())
-        return cell != null
-    }
-
-
     private fun input() {
+        var targetx = player.x
+        var targety = player.y
         if (Gdx.input.isKeyPressed(Keys.W)) {
-            player.y++
+            targety += 32
         }
         if (Gdx.input.isKeyPressed(Keys.S)) {
-            player.y--
+           targety -= 32
         }
         if (Gdx.input.isKeyPressed(Keys.A)) {
-            player.x--
+            targetx -= 32
         }
         if (Gdx.input.isKeyPressed(Keys.D)) {
-            player.x++
+            targetx += 32
         }
+        if (!isBlocked(targetx, targety)) {
+            player.x = targetx
+            player.y = targety
+        }
+    }
+
+    fun isBlocked(x: Float, y: Float): Boolean {
+        val tileX = player.x
+        // val tileY = (y / tileSize).toInt() // should deal with player
+        // coordinates in game terms instead of pixels
+        val tileY = player.y
+        val cell = wallLayer.getCell(tileX.toInt(), tileY.toInt())
+        return cell != null
     }
 
     private fun display () {
