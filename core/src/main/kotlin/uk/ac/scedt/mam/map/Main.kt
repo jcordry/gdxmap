@@ -48,6 +48,10 @@ class MapScreen : KtxScreen {
     private val player = Character(32f, 32f)
     private val tileSize = 32f
     private lateinit var wallLayer : TiledMapTileLayer
+    private var cooldown = 0f
+    private var cooldownMax = 0.1f
+    private var targetx = 0f
+    private var targety = 0f
 
     override fun show() {
         super.show()
@@ -65,32 +69,36 @@ class MapScreen : KtxScreen {
 
 
     private fun input() {
-        var targetx = player.x
-        var targety = player.y
+        targetx = player.x
+        targety = player.y
         if (Gdx.input.isKeyPressed(Keys.W)) {
-            targety += 32
+            targety += 32f
         }
         if (Gdx.input.isKeyPressed(Keys.S)) {
-           targety -= 32
+           targety -= 32f
         }
         if (Gdx.input.isKeyPressed(Keys.A)) {
-            targetx -= 32
+            targetx -= 32f
         }
         if (Gdx.input.isKeyPressed(Keys.D)) {
-            targetx += 32
+            targetx += 32f
         }
-        if (!isBlocked(targetx, targety)) {
-            player.x = targetx
-            player.y = targety
+
+        // We need a timer to avoid processing the input before a certain delay (e.g.: 50ms)
+        cooldown += Gdx.graphics.deltaTime
+        if (cooldown > cooldownMax) {
+            cooldown = 0f
+            if (!isBlocked(targetx, targety)) {
+                player.x = targetx
+                player.y = targety
+            }
         }
     }
 
     fun isBlocked(x: Float, y: Float): Boolean {
-        val tileX = player.x
-        // val tileY = (y / tileSize).toInt() // should deal with player
-        // coordinates in game terms instead of pixels
-        val tileY = player.y
-        val cell = wallLayer.getCell(tileX.toInt(), tileY.toInt())
+        val tileX = (x / tileSize).toInt() // should deal with player coordinates in game terms instead of pixels
+        val tileY = (y / tileSize).toInt()
+        val cell = wallLayer.getCell(tileX, tileY)
         return cell != null
     }
 
