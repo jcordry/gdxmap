@@ -60,7 +60,7 @@ class MapScreen : KtxScreen {
         val mapLoader = TmxMapLoader()
         map = mapLoader.load("tilemap01.tmx")
         renderer = OrthogonalTiledMapRenderer(map, 1f)
-//        camera.setToOrtho(true)
+        //        camera.setToOrtho(true)
         camera.position.set(viewport.worldWidth/2f, viewport.worldHeight/2f, 0f)
         wallLayer = map.layers.get("walls") as TiledMapTileLayer
     }
@@ -73,7 +73,7 @@ class MapScreen : KtxScreen {
             targety += 32f
         }
         if (Gdx.input.isKeyPressed(Keys.S)) {
-           targety -= 32f
+            targety -= 32f
         }
         if (Gdx.input.isKeyPressed(Keys.A)) {
             targetx -= 32f
@@ -110,7 +110,7 @@ class MapScreen : KtxScreen {
 
     override fun render(delta: Float) {
         input()
-//        logic()
+        //        logic()
         display()
     }
 
@@ -124,7 +124,7 @@ class MapScreen : KtxScreen {
     }
 
     override fun dispose() {
-//        image.disposeSafely()
+        //        image.disposeSafely()
         renderer.disposeSafely()
         batch.disposeSafely()
     }
