@@ -30,10 +30,15 @@ class Main : KtxGame<KtxScreen>() {
 
 class Character(var x: Float, var y: Float) {
     private val sprite = Sprite(Texture("circle1.png".toInternalFile(), true))
+
     fun render(sb : SpriteBatch) {
         sb.use {
             it.draw(sprite, x, y)
         }
+    }
+
+    fun dispose() {
+        sprite.texture.disposeSafely()
     }
 }
 
@@ -124,7 +129,7 @@ class MapScreen : KtxScreen {
     }
 
     override fun dispose() {
-//        image.disposeSafely()
+        player.dispose()
         renderer.disposeSafely()
         batch.disposeSafely()
     }
